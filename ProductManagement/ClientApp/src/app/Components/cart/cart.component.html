@@ -1,0 +1,53 @@
+<div class="container">
+  <div class="row">
+    <h1>Cart Items</h1>
+  </div>
+  
+  <div *ngIf="!products || products.length<=0" class="row">
+    <h1> Cart Is Empty</h1>
+    <br />
+    <span>
+      <button class="btn btn-link" (click)="GoToCart();" title="Go to cart">
+        Click Here
+      </button> to go buy Items.
+    </span>
+  </div>
+  <div  *ngIf="products && products.length>0" class="row">
+    <div class="row">
+      <h3><button type="button" class="btn btn-link" (click)="RemoveAllItemFromCart();">Remove All Items From Carts</button></h3>
+    </div>
+    <div class="card-list">
+      <div class="card" *ngFor="let product of products">
+        <div *ngIf="product" class="col-sm-3">
+          <article class="col-item">
+            <div class="photo">
+              <div class="options-cart-round">
+                <button class="btn btn-default" (click)="RemoveItemFromCart(product.id)" title="Remove from cart">
+                  <span>
+                    <i class="fas fa-minus-circle"></i>
+                  </span>
+
+                </button>
+              </div>
+              <a href="#"> <img src="https://unsplash.it/500/300?image=0" class="img-responsive" alt="Product Image" />
+                          </a>
+            </div>
+            <div class="info">
+              <div class="row">
+                <div class="price-details col-md-6">
+                  <p class="details">
+                    Sample Description
+                  </p>
+                  <h1>{{product.name}}</h1>
+                  <span class="price-new">{{product.price}}</span>
+                </div>
+              </div>
+            </div>
+          </article>
+          <p class="text-center">Hover over image</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
