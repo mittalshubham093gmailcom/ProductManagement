@@ -21,8 +21,12 @@ namespace ProductManagement.Services
 
         public int AddProduct(ProductViewModel product)
         {
-            SqlParameter[] parameter = { new SqlParameter("@name",product.Name),
+            int val = 10;
+            SqlParameter[] parameter = { 
+            new SqlParameter("@name",product.Name),
             new SqlParameter("@price",product.Price),
+            new SqlParameter("@rewards",val),
+            new SqlParameter("@image",product.Image),
             new SqlParameter("@categoryId",product.CategoryId)};
 
             bool addOperation = _DBOperations.SqlOperationToAddAndDelete("Product", "sp_AddProduct", parameter);

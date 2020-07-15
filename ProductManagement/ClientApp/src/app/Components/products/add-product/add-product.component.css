@@ -1,0 +1,71 @@
+.edit-user-modal-popup-title {
+  font-size: 22px;
+  padding-bottom: 20px;
+}
+
+input.btn.btn-danger {
+  width: 100%;
+  border-radius: 50px;
+  color: white;
+}
+
+.edit-user-modal-popup-header {
+  margin-bottom: 20px;
+}
+
+
+.img-space {
+  position: relative;
+  overflow: hidden;
+}
+
+  .img-space img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+
+.image-wrap {
+  padding: 10px;
+  border: solid 1px #e0e0e0;
+  display: inline-block;
+}
+
+.img-space img {
+  display: block;
+  width: 100px;
+  height: 100px;
+  margin: auto;
+  cursor: pointer;
+}
+
+.fileInputProfileWrap {
+  width: 100%;
+  height: auto;
+}
+
+.fileInputProfile {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  z-index: 99;
+  opacity: 0;
+  left: 0;
+}
+
+  .fileInputProfile[disabled] + .img-space {
+    pointer-events: none;
+    cursor: not-allowed !important;
+  }
+
+.text-box-popup option {
+  background-color: black;
+}
+
+.popup-close-btn {
+  float: right;
+  font-size: large;
+  padding: 0;
+  min-width: 30px;
+}

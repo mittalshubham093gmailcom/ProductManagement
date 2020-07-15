@@ -1,3 +1,40 @@
-<p>
-  add-product works!
-</p>
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="custom-file fileInputProfileWrap text-center">
+        <input type="file" (change)="fileChangeEvent($event)" class="fileInputProfile" accept="image/*">
+        <div class="img-space">
+
+          <ng-container *ngIf="profileImage; else elseTemplate">
+            <img [src]="profileImage" />
+          </ng-container>
+          <ng-template #elseTemplate>
+
+            <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" class="img-responsive">
+          </ng-template>
+
+        </div>
+
+      </div>
+      <form (ngSubmit)="updateUser()" [formGroup]="editUserForm" class=" text-center">
+        <div class="input-group mb-1">
+          <input type="text" name="name" autocomplete="off" class="form-control" placeholder="Enter The name" formControlName="name" />
+          <div *ngIf="submitted && f.name.errors" class="invalid-feedback-form">
+            <div *ngIf="f.name.errors.required">Item Name is Required</div>
+            <div *ngIf="f.name.errors?.minlength">Minimum 2 characters Required</div>
+          </div>
+        </div>
+        <div class="input-group mb-1">
+          <input type="number" name="price" autocomplete="off" class="form-control" placeholder="Enter The Price" formControlName="price" />
+          <div *ngIf="submitted && f.email.errors" class="invalid-feedback-form">
+            <div *ngIf="f.email.errors.required">Price required</div>
+          </div>
+        </div>
+       
+        <div class="form-group text-center">
+          <input class="btn btn-danger  mt-3" type="submit" value="SUBMIT">
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

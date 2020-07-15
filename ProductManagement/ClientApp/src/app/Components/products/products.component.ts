@@ -19,7 +19,7 @@ export class ProductsComponent implements OnInit {
   public selectedCards =[];
   public selectedCategory: any;
 
-  @ViewChild('closeBtn') closeBtn: ElementRef;
+  @ViewChild('closeBtn', { static: true }) closeBtn: ElementRef;
 
   constructor(private _router: Router, private _ProductService: ProductService, private route: ActivatedRoute, private formBuilder: FormBuilder, private _cartService: CartService) {
     this.route.params.subscribe(params => {
