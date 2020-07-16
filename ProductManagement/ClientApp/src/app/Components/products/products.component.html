@@ -43,16 +43,13 @@
                       <span class="fa fa-shopping-cart"></span>
                     </button>
                   </div>
-                  <a href="#"> <img src="https://unsplash.it/500/300?image=0" class="img-responsive" alt="Product Image" />
+                  <a href="#"> <img [src]="product.image" class="img-responsive" alt="Product Image" />
                   <input type="checkbox" (change)="checkValue($event.target.checked,product.id)" class="products-chk-box" />
                   </a>
                 </div>
                 <div class="info">
                   <div class="row">
                     <div class="price-details col-md-6">
-                      <p class="details">
-                        Sample Description
-                      </p>
                       <h1>{{product.name}}</h1>
                       <span class="price-new">{{product.price}}</span>
                     </div>

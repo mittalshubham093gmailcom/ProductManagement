@@ -7,7 +7,7 @@
   display: flex;
   top: 2px;
   right: 20px;
-  z-index: 99999;
+  z-index: 99;
   position: absolute;
   height: 13px;
   width: 13px;
@@ -166,3 +166,48 @@
 div .invalid-feedback{
   color: red;
 }
+
+.img-space {
+  position: relative;
+  overflow: hidden;
+}
+
+  .img-space img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+
+.image-wrap {
+  padding: 10px;
+  border: solid 1px #e0e0e0;
+  display: inline-block;
+}
+
+.img-space img {
+  display: block;
+  width: 100px;
+  height: 100px;
+  margin: auto;
+  cursor: pointer;
+}
+
+.fileInputProfileWrap {
+  width: 100%;
+  height: auto;
+}
+
+.fileInputProfile {
+  position: absolute;
+  height: 100px;
+  width: 100%;
+  z-index: 99;
+  opacity: 0;
+  left: 0;
+}
+
+  .fileInputProfile[disabled] + .img-space {
+    pointer-events: none;
+    cursor: not-allowed !important;
+  }

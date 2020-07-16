@@ -22,7 +22,7 @@ namespace ProductManagement.Controllers.ApiControllers
 
         // GET: api/<controller>
         [HttpPost("AddProducts")]
-        public Task<bool> AddProducts([FromBody]ProductViewModel product)
+        public Task<bool> AddProducts([FromForm] ProductViewModel product)
         {
 
             if (product == null)

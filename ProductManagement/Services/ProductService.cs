@@ -8,6 +8,7 @@ using System.Data.SqlClient;
 using System.Data;
 using ProductManagement.Connection;
 using ProductManagement.Models.viewModels;
+using System.IO;
 
 namespace ProductManagement.Services
 {
@@ -22,14 +23,24 @@ namespace ProductManagement.Services
         public int AddProduct(ProductViewModel product)
         {
             int val = 10;
-            SqlParameter[] parameter = { 
-            new SqlParameter("@name",product.Name),
-            new SqlParameter("@price",product.Price),
-            new SqlParameter("@rewards",val),
-            new SqlParameter("@image",product.Image),
-            new SqlParameter("@categoryId",product.CategoryId)};
-
-            bool addOperation = _DBOperations.SqlOperationToAddAndDelete("Product", "sp_AddProduct", parameter);
+            List<SqlParameter> parameter = new List<SqlParameter>();
+            parameter.Add(new SqlParameter("@name", product.Name));
+            parameter.Add(new SqlParameter("@price", product.Price));
+            parameter.Add(new SqlParameter("@rewards", val));
+            parameter.Add(new SqlParameter("@categoryId", product.CategoryId));
+           
+            var file = product.Image;
+            if (file.Length > 0)
+            {
+                using (var ms = new MemoryStream())
+                {
+                 
+                    file.CopyTo(ms);
+                    parameter.Add(new SqlParameter("@image", ms.ToArray()));
+                }
+            }
+           
+            bool addOperation = _DBOperations.SqlOperationToAddAndDelete("Product", "sp_AddProduct", parameter.ToArray());
             if (addOperation)
                 return 1;
             else
@@ -56,13 +67,18 @@ namespace ProductManagement.Services
                 return products;
             for (int i = 0; i < dt.Rows.Count; i++)
             {
-                products.Add(new Product
-                {
-                    Id = Convert.ToInt32(dt.Rows[i]["Id"]),
-                    Name = Convert.ToString(dt.Rows[i]["Name"]),
-                    Price = Convert.ToDecimal(dt.Rows[i]["Price"]),
-                    CategoryId = Convert.ToInt32(dt.Rows[i]["CategoryId"])
-                });
+                Product prod = new Product();
+
+                prod.Id = Convert.ToInt32(dt.Rows[i]["Id"]);
+                prod.Name = Convert.ToString(dt.Rows[i]["Name"]);
+                prod.Price = Convert.ToDecimal(dt.Rows[i]["Price"]);
+                prod.CategoryId = Convert.ToInt32(dt.Rows[i]["CategoryId"]);
+                object value = dt.Rows[i]["ItemImage"];
+                if (value != DBNull.Value)
+                    prod.image = System.Convert.ToBase64String((byte[])dt.Rows[i]["ItemImage"]);
+                else
+                    prod.image = string.Empty;
+                products.Add(prod);
 
 
             }
@@ -82,8 +98,9 @@ namespace ProductManagement.Services
                     Id = Convert.ToInt32(dt.Rows[i]["StudentId"]),
                     Name = Convert.ToString(dt.Rows[i]["StudentName"]),
                     Price = Convert.ToDecimal(dt.Rows[i]["Address"]),
-                    CategoryId = Convert.ToInt32(dt.Rows[i]["CategoryId"])
-                };
+                    CategoryId = Convert.ToInt32(dt.Rows[i]["CategoryId"]),
+                    image = dt.Rows[i]["ItemImage"] == null ? System.Convert.ToBase64String((byte[])dt.Rows[i]["ItemImage"]) : string.Empty
+            };
             }
             return product;
         }
@@ -121,7 +138,8 @@ namespace ProductManagement.Services
                     Id = Convert.ToInt32(dt.Rows[i]["Id"]),
                     Name = Convert.ToString(dt.Rows[i]["Name"]),
                     Price = Convert.ToDecimal(dt.Rows[i]["Price"]),
-                    CategoryId = Convert.ToInt32(dt.Rows[i]["CategoryId"])
+                    CategoryId = Convert.ToInt32(dt.Rows[i]["CategoryId"]),
+                    image = dt.Rows[i]["ItemImage"] == null ? System.Convert.ToBase64String((byte[])dt.Rows[i]["ItemImage"]) : string.Empty
                 });
 
             }

@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ProductService } from './product.service';
-import { error } from 'protractor';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { CartService } from '../cart/cart.service';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-products',
@@ -12,7 +12,7 @@ import { CartService } from '../cart/cart.service';
 })
 export class ProductsComponent implements OnInit {
   formProduct: FormGroup;
-  public products: any[];
+  public products: any[]=[];
   public categories: any[];
   public user: number = 2;
   public selectedCards =[];
@@ -20,7 +20,7 @@ export class ProductsComponent implements OnInit {
 
   @ViewChild('closeBtn', { static: true }) closeBtn: ElementRef;
 
-  constructor(private _router: Router, private _ProductService: ProductService, private route: ActivatedRoute, private formBuilder: FormBuilder, private _cartService: CartService) {
+  constructor(private _router: Router, private _ProductService: ProductService, private route: ActivatedRoute, private formBuilder: FormBuilder, private _cartService: CartService, private sanitizer: DomSanitizer) {
     this.route.params.subscribe(params => {
       if (params && params['user'] && (params['user'] == "1" || params['user'] == '1')) {
         this.user = 1;
@@ -47,7 +47,7 @@ export class ProductsComponent implements OnInit {
     this.formProduct = this.formBuilder.group({
       name: ['', Validators.required],
       price: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(5)]],
-      category: [0, [Validators.required]]
+      category: ['', [Validators.required]]
     });
   }
   get f() { return this.formProduct.controls; }
@@ -124,7 +124,21 @@ export class ProductsComponent implements OnInit {
       this.selectedCategory = val;
       this._ProductService.GetProductsByCategory(val).subscribe((response) => {
         if (response) {
-          this.products = response;
+          for (let i = 0; i < response.products.length; i++) {
+            let imgObj;
+            if (response.products[i].image && response.products[i].image != null && response.products[i].image != undefined && response.products[i].image != 'null' && response.products[i].image != 'undefined') {
+              imgObj = response.products[i].image;
+              let objectURL = 'data:image/jpeg;base64,' + imgObj.image;
+              imgObj = this.sanitizer.bypassSecurityTrustUrl(objectURL);
+            }
+            let item = {
+              id: response.products[i].id,
+              name: response.products[i].name,
+              price: response.products[i].price,
+              image: (imgObj != undefined && imgObj != null) ? imgObj : 'https://unsplash.it/500/300?image=0'
+            }
+            this.products.push(item);
+          }
         } else
           alert("No products for selected category");
       }, (error) => {
@@ -138,7 +152,23 @@ export class ProductsComponent implements OnInit {
   private getAllProducts() {
     this._ProductService.GetAllProducts().subscribe((response) => {
       if (response) {
-        this.products = response.products;
+        //this.products = response.products;
+        for (let i = 0; i < response.products.length; i++) {
+          let imgObj;
+          if (response.products[i].image && response.products[i].image != null && response.products[i].image != undefined && response.products[i].image != 'null' && response.products[i].image != 'undefined') {
+            imgObj = response.products[i].image;
+            let objectURL = 'data:image/jpeg;base64,' + imgObj;
+
+            imgObj = this.sanitizer.bypassSecurityTrustUrl(objectURL);
+          }
+            let item = {
+            id: response.products[i].id,
+            name: response.products[i].name,
+              price: response.products[i].price,
+              image: (imgObj != undefined && imgObj != null) ? imgObj : 'https://unsplash.it/500/300?image=0'
+          }
+          this.products.push(item);
+        }
         this.categories = response.categories;
       }
     }, (error) => {
@@ -186,8 +216,9 @@ export class ProductsComponent implements OnInit {
 
         }
         else {
-          this.getAllProducts();
+         
         }
+        this.getAllProducts();
         this.closeBtn.nativeElement.click();
 
       }
