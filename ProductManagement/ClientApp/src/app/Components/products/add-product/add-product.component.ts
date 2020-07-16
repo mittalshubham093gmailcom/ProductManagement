@@ -13,7 +13,7 @@ export class AddProductComponent implements OnInit {
   public submitted: boolean;
   public ImageFile: any;
   constructor(private formBuilder: FormBuilder, private _productService: ProductService) { }
-
+  get f() { return this.editUserForm.controls; }
   ngOnInit() {
     this.editUserForm = this.formBuilder.group({
       name: ['', [Validators.required]],

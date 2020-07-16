@@ -3,7 +3,6 @@ import { ProductService } from './product.service';
 import { error } from 'protractor';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
-import { validateConfig } from '@angular/router/src/config';
 import { CartService } from '../cart/cart.service';
 
 @Component({
@@ -34,7 +33,9 @@ export class ProductsComponent implements OnInit {
   }
   public invalidPrice: boolean = false;
   public isCategoryUnselected: boolean = false;
-  public submitted = false;
+  public profileImage: any;
+  public submitted: boolean;
+  public ImageFile: any;
   ngOnInit() {
     this.getAllProducts();
     this.initializedFOrmGroup();
@@ -151,7 +152,9 @@ export class ProductsComponent implements OnInit {
       onlySelf: true
     });
   }
-
+  public fileChangeEvent(event) {
+    this.ImageFile = event.target.files[0];
+  }
 
 
   public AddProducts() {
@@ -168,13 +171,15 @@ export class ProductsComponent implements OnInit {
     if (this.formProduct.invalid) {
       return;
     }
-    let prod = {
-      name: this.formProduct.get('name').value,
-      CategoryId: +this.formProduct.get('category').value,
-      price: this.formProduct.get('price').value
-
-    }
-    this._ProductService.AddProducts(prod).subscribe((resp) => {
+    const formData = new FormData();
+    formData.append('name', this.formProduct.controls["name"].value);
+    formData.append('price', this.formProduct.controls["price"].value);
+    formData.append('CategoryId', this.formProduct.controls["category"].value);
+   
+    if (this.ImageFile)
+      formData.append('image', this.ImageFile);
+    
+    this._ProductService.AddProducts(formData).subscribe((resp) => {
       if (resp) {
         if (this.selectedCategory && this.selectedCategory != 0) {
           this.filterProductsBasedOnCategory(this.selectedCategory);
