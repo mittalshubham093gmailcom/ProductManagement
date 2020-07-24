@@ -12,7 +12,7 @@ using ProductManagement.Models.viewModels;
 namespace ProductManagement.Controllers.ApiControllers
 {
     [Route("api/[controller]")]
-    public class ProductController : Controller
+    public class ProductController : ControllerBase
     {
         private readonly IProductService _IProductService;
         public ProductController(IProductService iProductService)
@@ -39,15 +39,15 @@ namespace ProductManagement.Controllers.ApiControllers
 
         // GET api/<controller>/5
         [HttpGet]
-        public JsonResult GetAllProducts()
+        public ActionResult GetAllProducts()
         {
             var products = _IProductService.GetAllProduct();
             var categories = _IProductService.GetCategories();
             if ((products == null || !products.Any())&& (categories == null || !categories.Any()))
-                return Json(new List<Product>());
+                return Ok(new List<Product>());
             else
             {
-                return Json(new {products= products,categories= categories});
+                return Ok(new {products= products,categories= categories});
             }
                
         }
@@ -71,34 +71,34 @@ namespace ProductManagement.Controllers.ApiControllers
         }
 
         [HttpGet("GetProductsByCategory")]
-        public JsonResult GetProductsByCategory(int id)
+        public ActionResult GetProductsByCategory(int id)
         {
             if (id ==0)
-                return Json(new List<Product>());
+                return new NotFoundResult();
             else
             {
                 var products = _IProductService.GetProductsByCategory(id);
                 if (products == null || !products.Any())
-                    return Json(new List<Product>());
+                    return Ok(new Product());
                 else
-                    return Json( products);
+                    return Ok(products);
             }
 
         }
 
         [HttpGet("GetProductById")]
-        public Product GetProductById(int id)
+        public ActionResult GetProductById(int id)
         {
 
             if (id == 0)
-                return new Product();
+                return new NoContentResult();
             else
             {
                 var product = _IProductService.GetProductById(id);
                 if (product == null )
-                    return new Product();
+                    return Ok(new Product());
                 else
-                    return product;
+                    return Ok(product);
             }
 
         }
